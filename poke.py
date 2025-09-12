@@ -27,6 +27,33 @@ GENRES = {
 }
 
 class MyClient(discord.Client):
+    async def getRandomMovie(self, genreID):
+        url = "https://api.themoviedb.org/3/discover/movie?api_key=" + API_KEY + "&with_genres=" + str(genreID) + "&language=en-US"
+        response =  requests.get(url).json()
+        randomMovie = random.choice(response["results"])
+    
+    async def getMovieSearch(self,movieSearch, message):
+        url = "https://api.themoviedb.org/3/search/movie?api_key=" + API_KEY + "&query=" + movieSearch
+        response = requests.get(url).json()
+        if not response["results"]:
+            await message.channel.send("Sorry, I don't recognize this movie")
+        movie = response["results"][0]
+        return movie
+
+    async def userInput(self, prompt, message):
+        await message.channel.send(prompt)
+        try:
+            msg = await self.wait_for("message", timeout = 30)
+            return msg.content.lower()
+        except asyncio.TimeoutError:
+            await message.channel.send('Sorry Took To Long To Respond')
+
+    async def getMovieDetails(self, movie, message):
+         ageRating = await self.getAgeRating(movie)  
+         poster = movie["poster_path"]
+         await self.getPoster(poster, message)
+         await message.channel.send("🎬 **" + movie["title"] + "**\nRelease Date: " + movie["release_date"] + "\nAge Rating: " + ageRating + "\nOverview: " + movie["overview"])
+        
     async def getActor(self, actorName, message):
         url = "https://api.themoviedb.org/3/search/person?api_key=" + API_KEY + "&query=" + actorName
         response = requests.get(url).json()
@@ -68,65 +95,30 @@ class MyClient(discord.Client):
         if message.content.startswith('$poke'):
             await message.channel.send('Hi, I am called PokeBot, I give movie recommendations based on what genre you like! Please Enter "$movie" To Start')
         if message.content.startswith('$movie'):
-            await message.channel.send('Enter The Genre Of Movie You Want To Watch: ')
-            try:
-                msg = await self.wait_for("message", timeout=30)
-                genreName = msg.content.lower()
-                genreID = GENRES.get(genreName)
-                if not genreID:
-                    await message.channel.send('I dont recognize this genre, my apolgies')
-                    return
-                url = "https://api.themoviedb.org/3/discover/movie?api_key=" + API_KEY + "&with_genres=" + str(genreID) + "&language=en-US"
-                response =  requests.get(url).json()
-                randomMovie = random.choice(response["results"])
-                ageRating = await self.getAgeRating(randomMovie)  
-                poster = randomMovie["poster_path"]
-                await self.getPoster(poster, message)
-                await message.channel.send("🎬 **" + randomMovie["title"] + "**\nRelease Date: " + randomMovie["release_date"] + "\nAge Rating: " + ageRating + "\nOverview: " + randomMovie["overview"])
-            except asyncio.TimeoutError:
-                await message.channel.send('Sorry Took To Long To Respond')
+            genreName = await self.userInput("What Genre Of Movie Do You Want To Watch", message)
+            genreID = GENRES.get(genreName)
+            if not genreID:
+                await message.channel.send('I dont recognize this genre, my apolgies')
+                return
+            randomMovie = await self.getRandomMovie(genreID)
+            await self.getMovieDetails(randomMovie, message)
+           
         if message.content.startswith("$actorRandom"):
-            await message.channel.send("What Is The Name Of The Actor You Want To Watch?")
-            try: 
-                msg = await self.wait_for("message", timeout=30)
-                actorName = msg.content.lower()
-                knownFor = await self.getActor(actorName, message)
-                randomMovie =  random.choice(knownFor)
-                ageRating = await self.getAgeRating(randomMovie)
-                poster = randomMovie["poster_path"]
-                await self.getPoster(poster,message)
-                await message.channel.send("🎬 **" + randomMovie["title"] + "**\nRelease Date: " + randomMovie["release_date"] + "\nAge Rating: " + ageRating + "\nOverview: " + randomMovie["overview"])
-            except asyncio.TimeoutError:
-                await message.channel.send('Sorry Took To Long To Respond')
+            actorName = await self.userInput("What Is The Name Of The Actor You Want To Watch?", message)
+            knownFor = await self.getActor(actorName, message)
+            randomMovie =  random.choice(knownFor)
+            await self.getMovieDetails(randomMovie, message)
+           
         if message.content.startswith("$actorKnownfor"):
-            await message.channel.send("What Is The Name Of The Actor You Want To Watch?")
-            try: 
-                msg = await self.wait_for("message", timeout=30)
-                actorName = msg.content.lower()
-                knownFor = await self.getActor(actorName, message)
-                for i in knownFor:
-                    poster = i["poster_path"]
-                    await self.getPoster(poster, message)
-                    ageRating = await self.getAgeRating(i)
-                    await message.channel.send("🎬 **" + i["title"] + "**\nRelease Date: " + i["release_date"] + "\nAge Rating: " + ageRating + "\nOverview: " + i["overview"])
-            except asyncio.TimeoutError:
-                await message.channel.send('Sorry Took To Long To Respond')
+            actorName = await self.userInput("What Is The Name Of The Actor You Want To Watch?", message)
+            knownFor = await self.getActor(actorName, message)
+            for i in knownFor:
+                await self.getMovieDetails(i, message)
+
         if message.content.startswith("$search"):
-            await message.channel.send("What Movie Do You Want To Search For?")
-            try:
-                msg = await self.wait_for("message", timeout=30)
-                movieSearch = msg.content.lower()
-                url = "https://api.themoviedb.org/3/discover/movie?api_key=" + API_KEY + "&query=" + movieSearch
-                response = requests.get(url).json()
-                if not response["results"]:
-                    await message.channel.send("Sorry, I don't recognize this movie")
-                movie = response["results"]
-                poster = movie["poster_path"]
-                await self.getPoster(poster, message)
-
-
-            except asyncio.TimeoutError:
-                await message.channel.send('Sorry Took To Long To Respond')
+             movieSearch = await self.userInput("What Movie Do You Want To Search For?", message)
+             movie = await self.getMovieSearch (movieSearch, message)
+             await self.getMovieDetails(movie, message)
 
 intents = discord.Intents.default()
 intents.message_content = True
