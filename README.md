@@ -43,7 +43,7 @@ PokeBot & MemeBot are Discord bots designed for entertainment purposes.
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 project-root/
@@ -92,14 +92,13 @@ $meme
 ```
 ---
 
-## ✅ Requirements
+## Requirements
 
 - Python 3.9 or higher  
 - Discord Bot Token  
 - TMDb API Key  
-- Internet connection  
 
-### 🔐 Bot Permissions
+### Bot Permissions
 - Send Messages  
 - Read Messages  
 - Embed Links (recommended)  
@@ -119,7 +118,7 @@ $meme
 - Watchlist feature  
 
 
-## 👤 Author
+## Author
 
 **Derek Goodman**  
 GitHub: https://github.com/DerekGoodman721
