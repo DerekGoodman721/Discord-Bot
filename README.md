@@ -34,5 +34,5 @@ PokeBot & MemeBot are Discord bots designed for entertainment and discovery.
 - **Python** – Core programming language  
 - **discord.py** – Discord API wrapper for bot  
 - **TMDb API** – Provides movie, actor, and filmography data
-- **- **Meme API:** meme-api.com (`/gimme` endpoint)** – Source for randomly generated memes
+- ****Meme API:** meme-api.com (`/gimme` endpoint)** – Source for randomly generated memes
 
