@@ -4,7 +4,6 @@ PokeBot & MemeBot are Discord bots designed for entertainment and discovery.
 
 - **PokeBot** recommends movies either randomly or based on selected genres and actors, and provides actor filmography and discography information.
 - **MemeBot** generates and sends random memes on command.
-- 
 ## Features
 ### PokeBot Commands
 
