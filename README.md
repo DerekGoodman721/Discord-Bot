@@ -1,10 +1,12 @@
-# PokeBot
-Discord bot that recommends movies either randomly or based on selected genres and actors.
-It can also provide notable films actors are known for, along with their filmography and discography.
+## Overview
 
+PokeBot & MemeBot are Discord bots designed for entertainment and discovery.
+
+- **PokeBot** recommends movies either randomly or based on selected genres and actors, and provides actor filmography and discography information.
+- **MemeBot** generates and sends random memes on command.
+- 
 ## Features
-
-### 🎬 Bot Commands
+### PokeBot Commands
 
 - **`$movieRandom <genre>`**  
   Recommends a random movie based on the genre you want to watch.
@@ -24,4 +26,14 @@ It can also provide notable films actors are known for, along with their filmogr
 - **`$stop`**  
   Stops the bot and resets all current actions.
 
+### MemeBot Commands
+
+- **`$meme`**  
+  Generates a random meme in the current channel
+
+## Tech Stack
+- **Python** – Core programming language  
+- **discord.py** – Discord API wrapper for bot  
+- **TMDb API** – Provides movie, actor, and filmography data
+- **- **Meme API:** meme-api.com (`/gimme` endpoint)** – Source for randomly generated memes
 
