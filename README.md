@@ -26,14 +26,13 @@ PokeBot & MemeBot are Discord bots designed for entertainment purposes.
 
 - **`$stop`**  
   Stops the bot and resets all current actions.
-  
----
 
 ### MemeBot Commands
 
 - **`$meme`**  
   Generates a random meme in the current channel
-
+  
+---
 ## Tech Stack
 - **Python** – Core programming language  
 - **discord.py** – Discord API wrapper for bot  
